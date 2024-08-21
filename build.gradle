@@ -1,0 +1,18 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://maven.pkg.github.com/spotify/android-auth" }
+        maven { url "https://maven.pkg.github.com/spotify/android-sdk" }
+    }
+    dependencies {
+        classpath 'com.google.gms:google-services:4.3.14'
+        // 기타 클래스패스 의존성
+    }
+}
+
+plugins {
+    id 'com.android.application' version '7.3.1' apply false
+    id 'com.android.library' version '7.3.1' apply false
+}
+

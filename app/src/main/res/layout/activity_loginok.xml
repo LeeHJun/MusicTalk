@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".loginok">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="200dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="30dp"
+        android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/logintext"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginTop="100dp"
+        android:gravity="center_horizontal"
+        android:text="환영합니다."
+        android:textAlignment="center"
+        android:textColor="@color/purple_200"
+        android:textSize="25dp"
+        android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="홈페이지로"
+            android:layout_gravity="bottom|center"
+            android:textColor="@color/purple_200"
+            android:textSize="10dp" />
+        <Button
+            android:id="@+id/back1"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="환경설정"
+            android:layout_gravity="bottom|center"
+            android:textColor="@color/purple_200"
+            android:textSize="10dp" />
+        <Button
+            android:id="@+id/back2"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="로그아웃"
+            android:layout_gravity="bottom|center"
+            android:textColor="@color/purple_200"
+            android:textSize="10dp" />
+
+    </LinearLayout>
+</LinearLayout>

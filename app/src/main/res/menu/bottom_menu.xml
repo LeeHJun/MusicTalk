@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/actionmypage"
+        android:enabled="true"
+        android:icon="@drawable/mypage"
+        android:title="내정보"/>
+
+    <item
+        android:id="@+id/actionmusic"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_music_note_24"
+        android:title="음악공유"/>
+
+    <item
+        android:id="@+id/actionwrap"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_wrap_text_24"
+        android:title="게시판"/>
+
+
+    <item
+        android:id="@+id/actionsearch"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="검색"/>
+
+</menu>

@@ -1,0 +1,29 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' } // JitPack 저장소 추가
+
+        flatDir {
+            dirs 'libs'
+        }
+        maven {
+            url 'https://maven.google.com'
+        }
+        jcenter()
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://maven.pkg.github.com/spotify/android-auth" }
+        maven { url "https://maven.pkg.github.com/spotify/android-sdk" }
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' } // JitPack 저장소 추가
+    }
+}
+rootProject.name = "My Application"
+include ':app'
