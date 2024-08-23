@@ -1,60 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp">
 
     <ImageView
         android:id="@+id/album_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/albume"
-        android:layout_centerHorizontal="true" />
+        android:contentDescription="@string/album_image_desc" />
 
     <TextView
         android:id="@+id/music_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Track Title"
-        android:layout_below="@id/album_image"
-        android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true" />
+        android:textSize="24sp"
+        android:text="노래제목" />
 
     <TextView
         android:id="@+id/music_artist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Artist Name"
-        android:layout_below="@id/music_title"
-        android:layout_marginTop="8dp"
-        android:layout_centerHorizontal="true" />
+        android:textSize="20sp"
+        android:text="가수" />
 
     <EditText
         android:id="@+id/post_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter post content"
-        android:layout_below="@id/music_artist"
-        android:layout_marginTop="16dp" />
-
-    <Button
-        android:id="@+id/post_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Post"
-        android:layout_below="@id/post_content"
-        android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true"
-        android:onClick="onPost" />
+        android:hint="코멘트를 입력해주세요" />
 
     <Button
         android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search"
-        android:layout_below="@id/post_button"
-        android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true"
-        android:onClick="onSearchTrack" />
+        android:text="Search" />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/post_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Post" />
+
+</LinearLayout>

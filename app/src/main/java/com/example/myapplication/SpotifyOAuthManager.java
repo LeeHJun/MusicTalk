@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -15,20 +16,25 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class SpotifyOAuthManager {
-    private static final String CLIENT_ID = "3868f7495e7f40058d0491a4c88c5936";
-    private static final String CLIENT_SECRET = "278f273fb3bd4f0c94b3832ee1f0578d";
+
+    private static final String CLIENT_ID = "a89f11f6968c49cb9d813d9bb2126719";
+    private static final String CLIENT_SECRET = "f71b0f0ab7b24ff1a88907ec957b5d0b";
     private static final String REDIRECT_URI = "myapp://callback";
+    private static final String TOKEN_URL = "https://accounts.spotify.com/api/token";
+    private static final String AUTH_URL = "https://accounts.spotify.com/authorize";
+    private static final String TAG = "SpotifyOAuthManager";
+
     private static SpotifyOAuthManager instance;
+    private Context context;
+    private String accessToken;
 
-    private String accessToken; // 액세스 토큰 저장 변수
-
-    private SpotifyOAuthManager() {
-        // Singleton 패턴
+    private SpotifyOAuthManager(Context context) {
+        this.context = context.getApplicationContext(); // ApplicationContext를 사용
     }
 
-    public static SpotifyOAuthManager getInstance() {
+    public static synchronized SpotifyOAuthManager getInstance(Context context) {
         if (instance == null) {
-            instance = new SpotifyOAuthManager();
+            instance = new SpotifyOAuthManager(context);
         }
         return instance;
     }
@@ -53,30 +59,42 @@ public class SpotifyOAuthManager {
                 .build();
 
         Request request = new Request.Builder()
-                .url("https://accounts.spotify.com/api/token")
+                .url(TOKEN_URL)
                 .post(formBody)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("SpotifyOAuthManager", "Failed to request access token: " + e.getMessage());
+                Log.e(TAG, "Failed to request access token", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response.body().string());
-                        accessToken = jsonObject.getString("access_token");
-                        Log.d("SpotifyOAuthManager", "Access token obtained successfully");
-                    } catch (JSONException e) {
-                        Log.e("SpotifyOAuthManager", "Failed to parse access token response: " + e.getMessage());
-                    }
+                if (response.isSuccessful() && response.body() != null) {
+                    handleTokenResponse(response.body().string());
                 } else {
-                    Log.e("SpotifyOAuthManager", "Failed to obtain access token");
+                    Log.e(TAG, "Failed to obtain access token, response code: " + response.code());
                 }
             }
         });
+    }
+
+    private void handleTokenResponse(String responseBody) {
+        try {
+            JSONObject jsonObject = new JSONObject(responseBody);
+            accessToken = jsonObject.getString("access_token");
+            Log.d(TAG, "Access token obtained successfully");
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to parse access token response", e);
+        }
+    }
+
+    public String createAuthUrl() {
+        // Spotify Authorization URL 생성
+        return AUTH_URL + "?client_id=" + CLIENT_ID +
+                "&response_type=code" +
+                "&redirect_uri=" + REDIRECT_URI +
+                "&scope=user-read-private user-read-email";
     }
 }

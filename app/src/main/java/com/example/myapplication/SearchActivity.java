@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,13 +12,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class SearchActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private TrackAdapter trackAdapter;
+    private OkHttpClient httpClient;
+    private EditText searchInput;
+    private Button searchButton;
+    private static final String LAST_FM_API_KEY = "9c9a029f67b2d59fec887a788eda9ef2"; // 여기에 Last.fm API 키를 입력하세요
+    private static final String LAST_FM_API_URL = "http://ws.audioscrobbler.com/2.0/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,41 +42,73 @@ public class SearchActivity extends AppCompatActivity {
         trackAdapter = new TrackAdapter(this, new ArrayList<>());
         recyclerView.setAdapter(trackAdapter);
 
-        // Intent로부터 쿼리 문자열 가져오기
-        String query = getIntent().getStringExtra("query");
-        if (query != null) {
-            searchTracks(query);
-        } else {
-            Toast.makeText(this, "No search query provided.", Toast.LENGTH_SHORT).show();
+        searchInput = findViewById(R.id.search_input);
+        searchButton = findViewById(R.id.search_button);
+
+        httpClient = new OkHttpClient(); // Initialize the OkHttpClient
+
+        // 검색 버튼 클릭 시 처리
+        searchButton.setOnClickListener(v -> performSearch());
+    }
+
+    private void performSearch() {
+        String query = searchInput.getText().toString().trim();
+        if (query.isEmpty()) {
+            Toast.makeText(this, "Please enter a search query.", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        searchTracks(query);
     }
 
     private void searchTracks(String query) {
-        // WritelistActivity의 searchSpotify 메서드를 호출하는 부분을 구현합니다.
-        // 여기에 API 호출 코드를 추가해야 합니다.
+        String url = LAST_FM_API_URL + "?method=track.search&track=" + query + "&api_key=" + LAST_FM_API_KEY + "&format=json";
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> Toast.makeText(SearchActivity.this, "Search failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseBody = response.body().string();
+                    runOnUiThread(() -> updateTrackList(responseBody));
+                } else {
+                    runOnUiThread(() -> Toast.makeText(SearchActivity.this, "Search failed with code: " + response.code(), Toast.LENGTH_SHORT).show());
+                }
+            }
+        });
     }
 
-    public void updateTrackList(String jsonResponse) {
+    private void updateTrackList(String jsonResponse) {
         try {
             JSONObject jsonObject = new JSONObject(jsonResponse);
-            JSONArray tracksArray = jsonObject.getJSONObject("tracks").getJSONArray("items");
+            JSONObject resultsObject = jsonObject.getJSONObject("results");
+            JSONArray trackArray = resultsObject.getJSONObject("trackmatches").getJSONArray("track");
 
             List<Track> tracks = new ArrayList<>();
-            for (int i = 0; i < tracksArray.length(); i++) {
-                JSONObject trackObject = tracksArray.getJSONObject(i);
-                String id = trackObject.getString("id");
+            for (int i = 0; i < trackArray.length(); i++) {
+                JSONObject trackObject = trackArray.getJSONObject(i);
+                String id = trackObject.getString("url"); // ID는 URL로 대체
                 String name = trackObject.getString("name");
-                String artist = trackObject.getJSONArray("artists").getJSONObject(0).getString("name");
-                String imageUrl = trackObject.getJSONObject("album").getJSONArray("images").getJSONObject(0).getString("url");
+                String artist = trackObject.getString("artist");
+                String imageUrl = trackObject.getJSONArray("image").getJSONObject(0).getString("#text");
 
                 tracks.add(new Track(id, name, artist, imageUrl));
             }
 
-            trackAdapter.trackList.clear();
-            trackAdapter.trackList.addAll(tracks);
-            trackAdapter.notifyDataSetChanged();
+            runOnUiThread(() -> {
+                trackAdapter.trackList.clear();
+                trackAdapter.trackList.addAll(tracks);
+                trackAdapter.notifyDataSetChanged();
+            });
         } catch (Exception e) {
-            Toast.makeText(this, "Failed to parse search results.", Toast.LENGTH_SHORT).show();
+            runOnUiThread(() -> Toast.makeText(this, "Failed to parse search results: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         }
     }
 }
