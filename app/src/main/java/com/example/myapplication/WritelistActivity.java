@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
 
 public class WritelistActivity extends AppCompatActivity {
 
@@ -65,26 +64,26 @@ public class WritelistActivity extends AppCompatActivity {
         selectedTrackId = data.getStringExtra("trackId");
         String trackName = data.getStringExtra("trackName");
         String artistName = data.getStringExtra("artistName");
-        String imageUrl = data.getStringExtra("imageUrl");
+        // String imageUrl = data.getStringExtra("imageUrl");
 
-        if (isTrackInfoValid(trackName, artistName, imageUrl)) {
-            updateTrackInfoUI(trackName, artistName, imageUrl);
+        if (isTrackInfoValid(trackName, artistName)) {
+            updateTrackInfoUI(trackName, artistName);
         } else {
             showToast("Failed to retrieve track information.");
         }
     }
 
-    private boolean isTrackInfoValid(String trackName, String artistName, String imageUrl) {
+    private boolean isTrackInfoValid(String trackName, String artistName) {
         return selectedTrackId != null && !selectedTrackId.isEmpty()
                 && trackName != null && !trackName.isEmpty()
-                && artistName != null && !artistName.isEmpty()
-                && imageUrl != null && !imageUrl.isEmpty();
+                && artistName != null && !artistName.isEmpty();
     }
 
-    private void updateTrackInfoUI(String trackName, String artistName, String imageUrl) {
+    private void updateTrackInfoUI(String trackName, String artistName) {
         musicTitle.setText(trackName);
         musicArtist.setText(artistName);
-        Picasso.get().load(imageUrl).into(albumImage);
+        // 고정된 이미지 리소스를 사용하여 앨범 이미지를 설정합니다.
+        albumImage.setImageResource(R.drawable.albume);
     }
 
     public void onPost(View view) {

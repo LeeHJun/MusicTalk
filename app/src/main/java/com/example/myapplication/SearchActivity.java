@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class SearchActivity extends AppCompatActivity {
         searchInput = findViewById(R.id.search_input);
         searchButton = findViewById(R.id.search_button);
 
-        httpClient = new OkHttpClient(); // Initialize the OkHttpClient
+        httpClient = new OkHttpClient();
 
         // 검색 버튼 클릭 시 처리
         searchButton.setOnClickListener(v -> performSearch());
@@ -97,7 +98,9 @@ public class SearchActivity extends AppCompatActivity {
                 String id = trackObject.getString("url"); // ID는 URL로 대체
                 String name = trackObject.getString("name");
                 String artist = trackObject.getString("artist");
-                String imageUrl = trackObject.getJSONArray("image").getJSONObject(0).getString("#text");
+
+                // 이미지가 없는 경우를 대비해 이미지의 크기를 큰 것부터 작은 순으로 가져옵니다.
+                String imageUrl = getImageUrl(trackObject.getJSONArray("image"));
 
                 tracks.add(new Track(id, name, artist, imageUrl));
             }
@@ -107,8 +110,24 @@ public class SearchActivity extends AppCompatActivity {
                 trackAdapter.trackList.addAll(tracks);
                 trackAdapter.notifyDataSetChanged();
             });
-        } catch (Exception e) {
+        } catch (JSONException e) {
             runOnUiThread(() -> Toast.makeText(this, "Failed to parse search results: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        } catch (Exception e) {
+            runOnUiThread(() -> Toast.makeText(this, "An unexpected error occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         }
+    }
+
+    private String getImageUrl(JSONArray imageArray) {
+        for (int j = imageArray.length() - 1; j >= 0; j--) {
+            try {
+                String imageUrl = imageArray.getJSONObject(j).getString("#text");
+                if (!imageUrl.isEmpty()) {
+                    return imageUrl; // 첫 번째로 유효한 이미지 URL을 반환
+                }
+            } catch (JSONException e) {
+                // 이미지 URL 파싱 중 예외 발생 시 무시
+            }
+        }
+        return ""; // 유효한 이미지 URL이 없는 경우 빈 문자열 반환
     }
 }

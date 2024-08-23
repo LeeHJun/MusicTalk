@@ -13,8 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> {
@@ -39,7 +37,9 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
         Track track = trackList.get(position);
         holder.trackName.setText(track.getName());
         holder.artistName.setText(track.getArtist());
-        Picasso.get().load(track.getImageUrl()).into(holder.albumImage);
+
+        // 고정된 이미지 리소스를 사용하여 앨범 이미지를 설정합니다.
+        holder.albumImage.setImageResource(R.drawable.albume);
 
         holder.itemView.setOnClickListener(v -> {
             Intent resultIntent = new Intent();

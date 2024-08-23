@@ -1,47 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
     <ImageView
         android:id="@+id/album_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/album_image_desc" />
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:contentDescription="@string/album_image_desc"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toStartOf="@+id/music_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/music_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="24sp"
-        android:text="노래제목" />
+        android:text="노래제목"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/album_image"
+        app:layout_constraintTop_toTopOf="@+id/album_image" />
 
     <TextView
         android:id="@+id/music_artist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:text="가수" />
+        android:text="가수"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/album_image"
+        app:layout_constraintTop_toBottomOf="@+id/music_title"
+        app:layout_constraintBottom_toBottomOf="@+id/album_image" />
 
     <EditText
         android:id="@+id/post_content"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="코멘트를 입력해주세요" />
+        android:hint="코멘트를 입력해주세요"
+        app:layout_constraintBottom_toTopOf="@+id/search_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/album_image" />
 
     <Button
         android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search" />
+        android:text="Search"
+        app:layout_constraintTop_toBottomOf="@+id/post_content"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/post_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Post" />
+        android:layout_marginTop="4dp"
+        android:text="Post"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/search_button"
+        app:layout_constraintTop_toBottomOf="@+id/post_content" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
