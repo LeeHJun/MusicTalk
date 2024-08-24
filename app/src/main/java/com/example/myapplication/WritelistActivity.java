@@ -11,20 +11,24 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class WritelistActivity extends AppCompatActivity {
 
-    private static final int SEARCH_REQUEST_CODE = 200; // REQUEST_CODE 정의
+    private static final int SEARCH_REQUEST_CODE = 200;
 
     private ImageView albumImage;
     private TextView musicTitle, musicArtist;
-    private EditText postContent;
+    private EditText postContent, userNameInput;
     private Button searchButton, postButton;
 
     private String selectedTrackId;
     private DatabaseReference databaseReference;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +36,20 @@ public class WritelistActivity extends AppCompatActivity {
         setContentView(R.layout.writelist);
 
         initializeUI();
-        databaseReference = FirebaseDatabase.getInstance().getReference("spotify_post"); // Firebase Database 참조
+
+        // Firebase 초기화
+        mAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference("spotify_post");
+
+        // ImageView에 기본 이미지 설정 (URL 사용 예제)
+        String imageUrl = "https://example.com/default_album_image.jpg"; // URL로 교체
+        Glide.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.albume) // 로딩 중에 표시할 기본 이미지
+                .into(albumImage);
 
         searchButton.setOnClickListener(v -> openSearchActivity());
-        postButton.setOnClickListener(v -> onPost(v));
+        postButton.setOnClickListener(this::onPost);
     }
 
     private void initializeUI() {
@@ -43,6 +57,7 @@ public class WritelistActivity extends AppCompatActivity {
         musicTitle = findViewById(R.id.music_title);
         musicArtist = findViewById(R.id.music_artist);
         postContent = findViewById(R.id.post_content);
+        userNameInput = findViewById(R.id.user_name_input);
         searchButton = findViewById(R.id.search_button);
         postButton = findViewById(R.id.post_button);
     }
@@ -64,7 +79,6 @@ public class WritelistActivity extends AppCompatActivity {
         selectedTrackId = data.getStringExtra("trackId");
         String trackName = data.getStringExtra("trackName");
         String artistName = data.getStringExtra("artistName");
-        // String imageUrl = data.getStringExtra("imageUrl");
 
         if (isTrackInfoValid(trackName, artistName)) {
             updateTrackInfoUI(trackName, artistName);
@@ -82,37 +96,39 @@ public class WritelistActivity extends AppCompatActivity {
     private void updateTrackInfoUI(String trackName, String artistName) {
         musicTitle.setText(trackName);
         musicArtist.setText(artistName);
-        // 고정된 이미지 리소스를 사용하여 앨범 이미지를 설정합니다.
-        albumImage.setImageResource(R.drawable.albume);
     }
 
-    public void onPost(View view) {
-        String content = postContent.getText().toString().trim();
-        if (isPostValid(content)) {
-            String postId = databaseReference.push().getKey();
-            if (postId != null) {
-                Post1 post = new Post1(selectedTrackId, content);
-                savePostToFirebase(postId, post);
-            }
+    private void onPost(View view) {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            showToast("사용자가 로그인되지 않았습니다.");
+            return;
+        }
+
+        String userId = currentUser.getUid();
+        String userName = userNameInput.getText().toString();
+        String postId = databaseReference.push().getKey();
+        String content = postContent.getText().toString();
+        String trackName = musicTitle.getText().toString();
+        String artistName = musicArtist.getText().toString();
+
+        Post1 post = new Post1(userId, userName, postId, content, trackName, artistName, selectedTrackId, 0, 0);
+
+        if (postId != null) {
+            savePostToDatabase(postId, post);
         }
     }
 
-    private boolean isPostValid(String content) {
-        if (selectedTrackId == null || selectedTrackId.isEmpty()) {
-            showToast("Please select a track.");
-            return false;
-        }
-        if (content.isEmpty()) {
-            showToast("Please enter post content.");
-            return false;
-        }
-        return true;
-    }
-
-    private void savePostToFirebase(String postId, Post1 post) {
+    private void savePostToDatabase(String postId, Post1 post) {
         databaseReference.child(postId).setValue(post)
-                .addOnSuccessListener(aVoid -> showToast("Post created successfully."))
-                .addOnFailureListener(e -> showToast("Failed to create post."));
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        showToast("게시물이 업로드되었습니다.");
+                        finish();
+                    } else {
+                        showToast("게시물 업로드에 실패하였습니다.");
+                    }
+                });
     }
 
     private void showToast(String message) {

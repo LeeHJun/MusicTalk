@@ -21,6 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true"
+        android:enableOnBackInvokedCallback="true"
         android:forceDarkAllowed="false"
         tools:targetApi="34">
 
@@ -130,6 +131,7 @@
                 <data android:scheme="myapp" android:host="callback" />
             </intent-filter>
         </activity>
+        <activity android:name=".fragments.Frag3"></activity>
 
     </application>
 
