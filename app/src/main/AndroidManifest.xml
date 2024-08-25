@@ -133,6 +133,7 @@
         </activity>
         <activity android:name=".fragments.Frag3"></activity>
 
+        <activity android:name=".WebViewActivity"></activity>
     </application>
 
 </manifest>
