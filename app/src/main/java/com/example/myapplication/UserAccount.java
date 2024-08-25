@@ -13,6 +13,7 @@ public class UserAccount
     private String Birth2;
     private String Birth3;
     private String mail;
+    private String profileImageUrl; // 프로필 이미지 URL을 저장할 필드 추가
 
     public UserAccount() { }
 
@@ -75,4 +76,13 @@ public class UserAccount
     public void setMail(String mail) {
         this.mail = mail;
     }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
 }

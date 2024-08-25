@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.Post1;
 import com.example.myapplication.R;
@@ -34,6 +35,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,11 +52,12 @@ public class Frag2 extends Fragment {
     private TextView userNameTextView, userIdTextView, userDescriptionTextView;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
+    private StorageReference storageReference;
     private SessionManager sessionManager;
     private RecyclerView recyclerViewWorks;
     private RecyclerView recyclerViewLikes;
     private SimplePostAdapter postAdapter;
-    private SimplePostAdapter2 boardPostAdapter; // 추가된 부분
+    private SimplePostAdapter2 boardPostAdapter;
     private List<SingerItem2> boardPostList = new ArrayList<>();
 
     @Nullable
@@ -69,6 +74,7 @@ public class Frag2 extends Fragment {
 
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
         sessionManager = new SessionManager(getActivity().getApplicationContext());
 
         if (!sessionManager.isLoggedIn()) {
@@ -83,7 +89,7 @@ public class Frag2 extends Fragment {
         loadUserInfo();
         view.findViewById(R.id.button_edit).setOnClickListener(v -> logout());
         loadUserPosts();
-        loadBoardPosts(); // 수정된 부분
+        loadBoardPosts();
 
         return view;
     }
@@ -99,52 +105,69 @@ public class Frag2 extends Fragment {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             Uri imageUri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                profileImageView.setImageBitmap(bitmap);
-                Log.d("Frag2", "프로필 이미지 변경됨: " + imageUri.toString());
-            } catch (IOException e) {
-                Log.e("Frag2", "이미지 로드 실패", e);
-            }
+            uploadImageToFirebase(imageUri);
         }
     }
 
+    private void uploadImageToFirebase(Uri imageUri) {
+        StorageReference profileImageRef = storageReference.child("profile_images/" + firebaseAuth.getCurrentUser().getUid() + ".jpg");
+
+        UploadTask uploadTask = profileImageRef.putFile(imageUri);
+
+        uploadTask.addOnSuccessListener(taskSnapshot -> profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            String imageUrl = uri.toString();
+            FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+            if (currentUser != null) {
+                databaseReference.child("Mutalk").child("UserAccount").child(currentUser.getUid()).child("profileImageUrl").setValue(imageUrl)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(getActivity(), "프로필 이미지가 업데이트되었습니다.", Toast.LENGTH_SHORT).show();
+                            Log.d("Frag2", "프로필 이미지 URL 저장 완료: " + imageUrl);
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(getActivity(), "프로필 이미지 업데이트 실패", Toast.LENGTH_SHORT).show();
+                            Log.e("Frag2", "프로필 이미지 URL 저장 실패", e);
+                        });
+            }
+        })).addOnFailureListener(e -> {
+            Toast.makeText(getActivity(), "프로필 이미지 업로드 실패", Toast.LENGTH_SHORT).show();
+            Log.e("Frag2", "프로필 이미지 업로드 실패", e);
+        });
+    }
+
     private void loadUserInfo() {
-        // 현재 로그인된 사용자 가져오기
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
         if (currentUser == null) {
-            // 사용자가 로그인되지 않은 경우
             Toast.makeText(getActivity(), "사용자가 로그인되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
             Log.e("Frag2", "사용자가 로그인되어 있지 않습니다.");
             return;
         }
 
-        // 현재 사용자의 UID 가져오기
         String userId = currentUser.getUid();
 
-        // Firebase Realtime Database에서 사용자 정보 가져오기
-        // 경로를 Mutalk/UserAccount로 수정
         databaseReference.child("Mutalk").child("UserAccount").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    // 데이터 스냅샷에서 UserAccount 객체 가져오기
                     UserAccount userAccount = dataSnapshot.getValue(UserAccount.class);
 
                     if (userAccount != null) {
-                        // 사용자 정보가 null이 아닌 경우, UI에 설정
                         userNameTextView.setText(userAccount.getName());
                         userIdTextView.setText(userAccount.getEmailId());
                         userDescriptionTextView.setText("안녕하세요 " + userAccount.getName() + "입니다. 잘 부탁드립니다.");
+
+                        if (userAccount.getProfileImageUrl() != null) {
+                            Glide.with(getActivity())
+                                    .load(userAccount.getProfileImageUrl())
+                                    .into(profileImageView);
+                        }
+
                         Log.d("Frag2", "사용자 정보 로드 완료: " + userAccount.toString());
                     } else {
-                        // UserAccount 객체가 null인 경우
                         Toast.makeText(getActivity(), "사용자 정보를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
                         Log.w("Frag2", "UserAccount 객체가 null입니다.");
                     }
                 } else {
-                    // 데이터베이스에서 사용자 정보가 존재하지 않는 경우
                     Toast.makeText(getActivity(), "사용자 정보를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
                     Log.w("Frag2", "데이터베이스에 사용자 정보가 존재하지 않습니다.");
                 }
@@ -152,14 +175,11 @@ public class Frag2 extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // 데이터베이스 읽기 실패 처리
                 Toast.makeText(getActivity(), "사용자 정보를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
                 Log.e("Frag2", "사용자 정보 로드 실패: " + databaseError.getMessage());
             }
         });
     }
-
-
 
     private void loadUserPosts() {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -216,7 +236,6 @@ public class Frag2 extends Fragment {
                 Log.d("Frag2", "게시판 게시글 데이터 변경 감지됨");
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    // "자유 게시판" 등의 게시판 이름이 추가로 있을 수 있으므로 하위 노드를 읽어야 합니다.
                     for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                         SingerItem2 item = postSnapshot.getValue(SingerItem2.class);
 
@@ -224,7 +243,6 @@ public class Frag2 extends Fragment {
                             String itemUserId = item.getUserId();
                             Log.d("Frag2", "불러온 게시글의 userId: " + itemUserId);
 
-                            // 로그에 현재 로그인된 사용자 ID도 출력
                             Log.d("Frag2", "현재 로그인된 사용자 UID: " + currentUserId);
 
                             if (itemUserId != null && itemUserId.equals(currentUserId)) {
@@ -256,7 +274,6 @@ public class Frag2 extends Fragment {
             }
         });
     }
-
 
     private void logout() {
         FirebaseAuth.getInstance().signOut();
