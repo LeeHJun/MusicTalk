@@ -9,6 +9,7 @@ public class Post1 {
     private String trackName;
     private String userId; // 사용자 ID
     private String userName; // 사용자 이름
+    private String postId; // 게시물 ID
 
     // 기본 생성자
     public Post1() {
@@ -19,6 +20,7 @@ public class Post1 {
     public Post1(String userId, String userName, String postId, String content, String trackName, String artistName, String trackId, int likeCount, int commentCount) {
         this.userId = userId;
         this.userName = userName;
+        this.postId = postId;
         this.trackId = trackId;
         this.content = content;
         this.trackName = trackName;
@@ -44,6 +46,8 @@ public class Post1 {
     public void setUserId(String userId) { this.userId = userId; }
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }
+    public String getPostId() { return postId; }
+    public void setPostId(String postId) { this.postId = postId; }
 
     @Override
     public String toString() {
@@ -56,6 +60,7 @@ public class Post1 {
                 ", trackName='" + trackName + '\'' +
                 ", userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
+                ", postId='" + postId + '\'' +
                 '}';
     }
 }

@@ -107,7 +107,7 @@ public class WritelistActivity extends AppCompatActivity {
 
         String userId = currentUser.getUid();
         String userName = userNameInput.getText().toString();
-        String postId = databaseReference.push().getKey();
+        String postId = databaseReference.push().getKey(); // 새로운 postId 생성
         String content = postContent.getText().toString();
         String trackName = musicTitle.getText().toString();
         String artistName = musicArtist.getText().toString();
