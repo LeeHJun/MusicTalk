@@ -24,6 +24,8 @@ import com.example.myapplication.Post1;
 import com.example.myapplication.R;
 import com.example.myapplication.SessionManager;
 import com.example.myapplication.SimplePostAdapter;
+import com.example.myapplication.SimplePostAdapter2;
+import com.example.myapplication.SingerItem2;
 import com.example.myapplication.UserAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,8 +50,10 @@ public class Frag2 extends Fragment {
     private DatabaseReference databaseReference;
     private SessionManager sessionManager;
     private RecyclerView recyclerViewWorks;
+    private RecyclerView recyclerViewLikes;
     private SimplePostAdapter postAdapter;
-    private List<Post1> postList = new ArrayList<>();
+    private SimplePostAdapter2 boardPostAdapter; // 추가된 부분
+    private List<SingerItem2> boardPostList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -61,9 +65,10 @@ public class Frag2 extends Fragment {
         userIdTextView = view.findViewById(R.id.user_id);
         userDescriptionTextView = view.findViewById(R.id.user_description);
         recyclerViewWorks = view.findViewById(R.id.recycler_view_works);
+        recyclerViewLikes = view.findViewById(R.id.recycler_view_likes);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Mutalk");
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         sessionManager = new SessionManager(getActivity().getApplicationContext());
 
         if (!sessionManager.isLoggedIn()) {
@@ -78,6 +83,7 @@ public class Frag2 extends Fragment {
         loadUserInfo();
         view.findViewById(R.id.button_edit).setOnClickListener(v -> logout());
         loadUserPosts();
+        loadBoardPosts(); // 수정된 부분
 
         return view;
     }
@@ -96,8 +102,9 @@ public class Frag2 extends Fragment {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                 profileImageView.setImageBitmap(bitmap);
+                Log.d("Frag2", "프로필 이미지 변경됨: " + imageUri.toString());
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("Frag2", "이미지 로드 실패", e);
             }
         }
     }
@@ -107,6 +114,7 @@ public class Frag2 extends Fragment {
 
         if (currentUser == null) {
             Toast.makeText(getActivity(), "사용자가 로그인되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
+            Log.e("Frag2", "사용자가 로그인되어 있지 않습니다.");
             return;
         }
 
@@ -122,17 +130,20 @@ public class Frag2 extends Fragment {
                         userNameTextView.setText(userAccount.getName());
                         userIdTextView.setText(userAccount.getEmailId());
                         userDescriptionTextView.setText("안녕하세요 " + userAccount.getName() + "입니다. 잘 부탁드립니다.");
+                        Log.d("Frag2", "사용자 정보 로드 완료: " + userAccount.toString());
                     } else {
                         Toast.makeText(getActivity(), "사용자 정보를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        Log.w("Frag2", "사용자 정보가 null입니다.");
                     }
                 } else {
-                    Toast.makeText(getActivity(), "사용자 정보가 데이터베이스에 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    Log.w("Frag2", "데이터베이스에 사용자 정보가 존재하지 않습니다.");
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(getActivity(), "사용자 정보를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                Log.e("Frag2", "사용자 정보 로드 실패: " + databaseError.getMessage());
             }
         });
     }
@@ -145,37 +156,25 @@ public class Frag2 extends Fragment {
             return;
         }
 
-        // Firebase에서 현재 로그인한 사용자와 관련된 게시물 로드
+        String currentUserId = currentUser.getUid();
+        Log.d("Frag2", "현재 로그인된 사용자 UID: " + currentUserId);
+
         databaseReference.child("spotify_post").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                postList.clear();
-                Log.d("Frag2", "데이터 변경 감지됨");
-
+                List<Post1> postList = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Post1 post = snapshot.getValue(Post1.class);
                     if (post != null) {
-                        Log.d("Frag2", "게시물 데이터: " + post.toString());
-                        postList.add(post);
-                    } else {
-                        Log.d("Frag2", "게시물이 null입니다.");
+                        if (post.getUserId().equals(currentUserId)) {
+                            postList.add(post);
+                        }
                     }
                 }
-
-                if (postList.isEmpty()) {
-                    Log.d("Frag2", "게시물이 없습니다.");
-                } else {
-                    Log.d("Frag2", "게시물 로드 완료, 총 게시물 수: " + postList.size());
-                }
-
-                // RecyclerView와 Adapter 설정
-                if (postAdapter == null) {
-                    postAdapter = new SimplePostAdapter(postList, getActivity());
-                    recyclerViewWorks.setAdapter(postAdapter);
-                    recyclerViewWorks.setLayoutManager(new LinearLayoutManager(getActivity()));
-                } else {
-                    postAdapter.notifyDataSetChanged();
-                }
+                Log.d("Frag2", "게시물 로드 완료, 총 게시물 수: " + postList.size());
+                postAdapter = new SimplePostAdapter(postList, getActivity());
+                recyclerViewWorks.setAdapter(postAdapter);
+                recyclerViewWorks.setLayoutManager(new LinearLayoutManager(getActivity()));
             }
 
             @Override
@@ -185,6 +184,66 @@ public class Frag2 extends Fragment {
             }
         });
     }
+
+    private void loadBoardPosts() {
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+        if (currentUser == null) {
+            Log.e("Frag2", "사용자가 로그인되어 있지 않습니다.");
+            return;
+        }
+
+        String currentUserId = currentUser.getUid();
+        Log.d("Frag2", "현재 로그인된 사용자 UID: " + currentUserId);
+
+        databaseReference.child("notice board").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boardPostList.clear();
+                Log.d("Frag2", "게시판 게시글 데이터 변경 감지됨");
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    // "자유 게시판" 등의 게시판 이름이 추가로 있을 수 있으므로 하위 노드를 읽어야 합니다.
+                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        SingerItem2 item = postSnapshot.getValue(SingerItem2.class);
+
+                        if (item != null) {
+                            String itemUserId = item.getUserId();
+                            Log.d("Frag2", "불러온 게시글의 userId: " + itemUserId);
+
+                            // 로그에 현재 로그인된 사용자 ID도 출력
+                            Log.d("Frag2", "현재 로그인된 사용자 UID: " + currentUserId);
+
+                            if (itemUserId != null && itemUserId.equals(currentUserId)) {
+                                Log.d("Frag2", "게시판 게시글 데이터 (현재 로그인 사용자와 일치): " + item.toString());
+                                boardPostList.add(item);
+                            } else {
+                                Log.d("Frag2", "게시판 게시글의 userId와 로그인된 사용자 UID가 일치하지 않거나 userId가 null입니다.");
+                            }
+                        } else {
+                            Log.d("Frag2", "게시판 게시글이 null입니다.");
+                        }
+                    }
+                }
+
+                if (boardPostList.isEmpty()) {
+                    Log.d("Frag2", "게시판 게시글이 없습니다.");
+                }
+
+                boardPostAdapter = new SimplePostAdapter2(boardPostList, getActivity());
+                recyclerViewLikes.setAdapter(boardPostAdapter);
+                recyclerViewLikes.setLayoutManager(new LinearLayoutManager(getActivity()));
+                Log.d("Frag2", "게시판 게시글 로드 완료, 총 게시글 수: " + boardPostList.size());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("Frag2", "게시판 게시글 로드 실패: " + databaseError.getMessage());
+                Toast.makeText(getActivity(), "게시판 게시글 로드 실패", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void logout() {
         FirebaseAuth.getInstance().signOut();
