@@ -15,7 +15,7 @@
         android:id="@+id/reg_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#C62828"
+        android:background="@color/skyblue"
         android:textColor="#FFFFFF"
         android:text="새 글 작성하기"
         />

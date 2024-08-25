@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +7,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.fragments.Frag1;
 import com.google.firebase.database.DataSnapshot;
@@ -23,7 +24,8 @@ public class list extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
-    private String boardName = ""; // 게시판 이름을 저장하기 위한 변수
+    private String boardName = "";
+    private List<SingerItem2> items = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,7 @@ public class list extends AppCompatActivity {
 
     private void initFirebase() {
         database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference("notice board").child(boardName); // 게시판 이름을 경로에 사용
+        databaseReference = database.getReference("notice board").child(boardName);
     }
 
     private void initView() {
@@ -55,7 +57,7 @@ public class list extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(list.this, register.class);
-                intent.putExtra("BOARD_NAME", boardName); // 게시판 이름을 전달
+                intent.putExtra("BOARD_NAME", boardName);
                 startActivity(intent);
             }
         });
@@ -69,7 +71,7 @@ public class list extends AppCompatActivity {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<SingerItem2> items = new ArrayList<>();
+                items.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     SingerItem2 item = snapshot.getValue(SingerItem2.class);
                     if (item != null) {
@@ -99,8 +101,8 @@ public class list extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SingerItem2 selectedItem = (SingerItem2) adapter.getItem(position);
                 Intent intent = new Intent(list.this, PostDetailActivity.class);
-                intent.putExtra("POST_ID", selectedItem.getName());
-                intent.putExtra("BOARD_NAME", boardName); // 게시판 이름도 전달
+                intent.putExtra("POST_ID", selectedItem.getPostId()); // 수정된 부분
+                intent.putExtra("BOARD_NAME", boardName);
                 startActivity(intent);
             }
         });
