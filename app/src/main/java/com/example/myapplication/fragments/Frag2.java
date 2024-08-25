@@ -110,43 +110,56 @@ public class Frag2 extends Fragment {
     }
 
     private void loadUserInfo() {
+        // 현재 로그인된 사용자 가져오기
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
         if (currentUser == null) {
+            // 사용자가 로그인되지 않은 경우
             Toast.makeText(getActivity(), "사용자가 로그인되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
             Log.e("Frag2", "사용자가 로그인되어 있지 않습니다.");
             return;
         }
 
+        // 현재 사용자의 UID 가져오기
         String userId = currentUser.getUid();
 
-        databaseReference.child("UserAccount").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+        // Firebase Realtime Database에서 사용자 정보 가져오기
+        // 경로를 Mutalk/UserAccount로 수정
+        databaseReference.child("Mutalk").child("UserAccount").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    // 데이터 스냅샷에서 UserAccount 객체 가져오기
                     UserAccount userAccount = dataSnapshot.getValue(UserAccount.class);
 
                     if (userAccount != null) {
+                        // 사용자 정보가 null이 아닌 경우, UI에 설정
                         userNameTextView.setText(userAccount.getName());
                         userIdTextView.setText(userAccount.getEmailId());
                         userDescriptionTextView.setText("안녕하세요 " + userAccount.getName() + "입니다. 잘 부탁드립니다.");
                         Log.d("Frag2", "사용자 정보 로드 완료: " + userAccount.toString());
                     } else {
+                        // UserAccount 객체가 null인 경우
                         Toast.makeText(getActivity(), "사용자 정보를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
-                        Log.w("Frag2", "사용자 정보가 null입니다.");
+                        Log.w("Frag2", "UserAccount 객체가 null입니다.");
                     }
                 } else {
+                    // 데이터베이스에서 사용자 정보가 존재하지 않는 경우
+                    Toast.makeText(getActivity(), "사용자 정보를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
                     Log.w("Frag2", "데이터베이스에 사용자 정보가 존재하지 않습니다.");
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                // 데이터베이스 읽기 실패 처리
                 Toast.makeText(getActivity(), "사용자 정보를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
                 Log.e("Frag2", "사용자 정보 로드 실패: " + databaseError.getMessage());
             }
         });
     }
+
+
 
     private void loadUserPosts() {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
