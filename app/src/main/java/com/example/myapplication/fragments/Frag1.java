@@ -29,7 +29,6 @@ public class Frag1 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag1, container, false);
 
-        // Initialize itemList with default items
         itemList = new ArrayList<>();
         itemList.add(new SingerItem2("자유 게시판", "자유로운 얘기", R.drawable.icon01, 0, 0, null, null, "자유 게시판"));
         itemList.add(new SingerItem2("창작 게시판", "음악 창작 공유", R.drawable.icon2, 0, 0, null, null, "창작 게시판"));

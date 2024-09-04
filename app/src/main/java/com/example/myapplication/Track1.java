@@ -6,7 +6,6 @@ public class Track1 {
     private String artist;
     private String imageUrl;
 
-    // Constructor
     public Track1(String id, String name, String artist, String imageUrl) {
         this.id = id;
         this.name = name;
@@ -14,7 +13,6 @@ public class Track1 {
         this.imageUrl = imageUrl;
     }
 
-    // Getter and Setter methods
     public String getId() {
         return id;
     }

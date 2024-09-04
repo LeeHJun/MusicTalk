@@ -130,12 +130,12 @@ public class Frag4 extends Fragment {
             try {
                 String imageUrl = imageArray.getJSONObject(j).getString("#text");
                 if (!imageUrl.isEmpty()) {
-                    return imageUrl; // 첫 번째로 유효한 이미지 URL을 반환
+                    return imageUrl;
                 }
             } catch (JSONException e) {
-                // 이미지 URL 파싱 중 예외 발생 시 무시
+
             }
         }
-        return ""; // 유효한 이미지 URL이 없는 경우 빈 문자열 반환
+        return "";
     }
 }

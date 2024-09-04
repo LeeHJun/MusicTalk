@@ -13,7 +13,6 @@ public class Post1 {
 
     // 기본 생성자
     public Post1() {
-        // Firebase Database에서 객체 생성 시 필요한 기본 생성자
     }
 
     // 필요한 매개변수를 받는 생성자

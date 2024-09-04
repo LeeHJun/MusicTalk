@@ -5,7 +5,6 @@ public class Comment {
     private String text;
 
     public Comment() {
-        // Default constructor required for calls to DataSnapshot.getValue(Comment.class)
     }
 
     public Comment(String username, String text) {

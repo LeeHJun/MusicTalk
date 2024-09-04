@@ -53,7 +53,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.musicTitleTextView.setText(post.getTrackName());
         holder.musicArtistTextView.setText(post.getArtistName());
 
-        // Get the comments for this post
         List<String> comments = postCommentsMap.get(post.getPostId());
         if (comments == null) {
             comments = new ArrayList<>();
@@ -64,7 +63,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.commentsRecyclerView.setAdapter(commentAdapter);
         holder.commentsRecyclerView.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
 
-        // Scroll to the bottom to show the latest comments
         holder.commentsRecyclerView.post(() -> {
             holder.commentsRecyclerView.scrollToPosition(commentAdapter.getItemCount() - 1);
         });
@@ -104,7 +102,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
         });
 
-        // Set up write button
         holder.writeImageView.setOnClickListener(v -> {
             Intent intent = new Intent(context, WritelistActivity.class);
             context.startActivity(intent);
@@ -137,7 +134,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         postRef.child("likeCount").setValue(newLikeCount)
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
-                        // Handle error
+                        // 핸들러 에러코드
                     }
                 });
     }
@@ -159,7 +156,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle possible errors
+                // 핸들러 possible 에러
             }
         });
     }

@@ -4,6 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/layoutbackground"
+    android:layout_margin="15dp"
     android:padding="16dp">
 
     <ImageView
@@ -22,6 +24,7 @@
         android:layout_height="wrap_content"
         android:textSize="24sp"
         android:text="노래제목"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/album_image"
         app:layout_constraintTop_toTopOf="@+id/album_image" />
@@ -32,6 +35,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:text="가수"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/album_image"
         app:layout_constraintTop_toBottomOf="@+id/music_title"
@@ -42,37 +46,51 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="사용자 이름을 입력하세요"
+        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toTopOf="@+id/post_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/album_image" />
+        app:layout_constraintTop_toBottomOf="@+id/album_image"
+        android:backgroundTint="@color/skyblue"
+        android:layout_marginBottom="10dp"/>
 
     <EditText
         android:id="@+id/post_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="코멘트를 입력해주세요"
+        android:backgroundTint="@color/skyblue"
+        android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@+id/search_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_name_input" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/search_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Search"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:text="검색"
+        android:background="@drawable/buttons"
+        android:backgroundTint="@null"
+        android:textColor="@color/white"
+        android:textStyle="normal"
+        android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@+id/post_content"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/post_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Post"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:text="작성"
+        android:background="@drawable/buttons"
+        android:backgroundTint="@null"
+        android:textColor="@color/white"
+        android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/search_button"

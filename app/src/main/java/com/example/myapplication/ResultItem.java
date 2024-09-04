@@ -6,7 +6,6 @@ public class ResultItem {
     private String artist;    // Artist name
     private String imageUrl;  // Album image URL
 
-    // Getters and Setters
     public String getId() {
         return id;
     }

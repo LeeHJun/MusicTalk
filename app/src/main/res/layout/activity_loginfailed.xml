@@ -23,7 +23,7 @@
             android:gravity="center_horizontal"
             android:text="로그인에 실패하였습니다."
             android:textAlignment="center"
-            android:textColor="@color/purple_200"
+            android:textColor="@color/skyblue"
             android:textSize="25dp"
             android:textStyle="bold" />
         <TextView
@@ -33,18 +33,21 @@
             android:gravity="center_horizontal"
             android:text="메인화면으로 돌아가주세요."
             android:textAlignment="center"
-            android:textColor="@color/purple_200"
+            android:textColor="@color/skyblue"
             android:textSize="25dp"
             android:textStyle="bold" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_width="140dp"
+            android:layout_height="40dp"
             android:text="로그인 화면으로"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/buttons"
             android:layout_gravity="bottom|center"
-            android:textColor="@color/purple_200"
-            android:textSize="10dp" />
+            android:textColor="@color/white"
+            android:backgroundTint="@null"
+            android:textSize="13dp" />
 
     </LinearLayout>
 </LinearLayout>

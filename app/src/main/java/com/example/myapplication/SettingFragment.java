@@ -18,10 +18,6 @@ public class SettingFragment extends PreferenceFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//별도의 화면 레이아웃파일(layout폴더)을 사용하지 않고
-//설정 xml문서를 총해 화면이 자동 생성
-//res폴더 안에 xml폴더 안에 .xml문서를 만들고
-//<PregerenceScreen>클래스를 통해 화면 설계 시작..
 
         addPreferencesFromResource(R.xml.setting);
 

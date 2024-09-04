@@ -30,7 +30,6 @@ public class PostDetailActivity extends AppCompatActivity {
     private String postId;
     private boolean isLiked = false; // 좋아요 상태를 추적하는 변수
 
-    // UI 요소 선언
     private TextView nameTextView;
     private TextView mobileTextView;
     private TextView likesCountTextView;

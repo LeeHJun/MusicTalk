@@ -27,6 +27,7 @@ android:layout_height="130dp">
     android:paddingTop="15dp"
     android:layout_marginBottom="3dp"
     android:text="이름"
+    android:textColor="@color/black"
     android:layout_toRightOf="@+id/profile_image"
     android:textSize="24sp" />
 
@@ -37,6 +38,7 @@ android:layout_height="130dp">
     android:layout_gravity="center"
     android:paddingBottom="8dp"
     android:text="idid1234"
+    android:textColor="@color/black"
     android:layout_toRightOf="@+id/profile_image"
     android:layout_below="@+id/user_name"
     android:textSize="16sp" />
@@ -48,6 +50,7 @@ android:layout_height="130dp">
     android:layout_gravity="center"
     android:paddingBottom="16dp"
     android:text="다들 반갑습니다"
+    android:textColor="@color/black"
     android:layout_below="@+id/user_id"
     android:layout_toRightOf="@+id/profile_image"
     android:textSize="14sp" />
@@ -59,6 +62,7 @@ android:layout_height="130dp">
     android:layout_marginTop="10dp"
     android:background="@drawable/buttons"
     android:layout_gravity="center"
+    android:textColor="@color/white"
     android:layout_alignParentRight="true"
     android:text="로그아웃" />
 </RelativeLayout>
@@ -69,13 +73,14 @@ android:layout_height="1dp"
 android:background="@drawable/list" />
 
 <TextView
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="* 작성한 음악공유 게시글 *"
-android:layout_marginBottom="3dp"
-android:textSize="18sp"
-android:textStyle="bold"
-android:paddingTop="16dp"/>
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="* 작성한 음악공유 게시글 *"
+    android:layout_marginBottom="3dp"
+    android:textColor="@color/black"
+    android:textSize="18sp"
+    android:textStyle="bold"
+    android:paddingTop="16dp"/>
 
 <androidx.recyclerview.widget.RecyclerView
 android:id="@+id/recycler_view_works"
@@ -96,6 +101,7 @@ android:layout_height="wrap_content"
 android:textStyle="bold"
 android:layout_marginBottom="3dp"
 android:text="* 작성한 게시판 게시글 *"
+    android:textColor="@color/black"
 android:textSize="18sp"
 android:paddingTop="16dp"/>
 

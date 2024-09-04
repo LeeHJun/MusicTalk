@@ -1,8 +1,5 @@
 package com.example.myapplication;
 
-/**
- * * 사용자 계정 정보 모델 클래스
- */
 public class UserAccount
 {
     private String idToken; // firbass Uid(고유 토큰정보)

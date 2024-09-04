@@ -5,7 +5,6 @@ public class Comment1 {
     private String text;
 
     public Comment1() {
-        // 기본 생성자 필요
     }
 
     public Comment1(String id, String text) {

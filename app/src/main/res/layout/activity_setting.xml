@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- 설정화면 전용 Fragment -->
     <fragment
         android:id="@+id/frag_setting"
         android:layout_width="match_parent"

@@ -3,18 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/layoutbackground"
+    android:layout_margin="10dp"
     android:padding="16dp">
 
     <EditText
         android:id="@+id/search_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/skyblue"
         android:hint="노래검색" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/search_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:background="@drawable/buttons"
+        android:backgroundTint="@null"
+        android:layout_marginTop="3dp"
+        android:textColor="@color/white"
+        android:textStyle="normal"
         android:text="검색" />
 
     <androidx.recyclerview.widget.RecyclerView

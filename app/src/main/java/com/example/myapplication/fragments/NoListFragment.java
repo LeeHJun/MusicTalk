@@ -21,17 +21,16 @@ public class NoListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // nolist.xml 레이아웃을 인플레이트
+
         View view = inflater.inflate(R.layout.nolist, container, false);
 
-        // XML 레이아웃 파일에서 뷰를 찾기
         goToWritelistButton = view.findViewById(R.id.gofrag3);
 
         // 버튼 클릭 리스너 설정
         goToWritelistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // WritelistActivity로 이동
+
                 Intent intent = new Intent(getActivity(), WritelistActivity.class);
                 startActivity(intent);
             }

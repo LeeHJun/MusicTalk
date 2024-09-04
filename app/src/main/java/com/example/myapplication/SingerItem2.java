@@ -8,11 +8,10 @@ public class SingerItem2 {
     private int likeCount = 0;    // 기본값 0 설정
     private String userId;
     private String postId;
-    private String boardName;     // 게시판 이름을 나타내는 매개변수 추가
+    private String boardName;
 
     // 기본 생성자 (Firebase에서 객체를 역직렬화할 때 필요)
     public SingerItem2() {
-        // 빈 생성자
     }
 
     // 매개변수를 받는 생성자
@@ -24,10 +23,9 @@ public class SingerItem2 {
         this.likeCount = likeCount;
         this.userId = userId;
         this.postId = postId;
-        this.boardName = boardName; // boardName 필드 초기화
+        this.boardName = boardName;
     }
 
-    // Getter와 Setter 메서드
     public String getName() {
         return name;
     }
@@ -102,7 +100,7 @@ public class SingerItem2 {
                 ", likeCount=" + likeCount +
                 ", userId='" + userId + '\'' +
                 ", postId='" + postId + '\'' +
-                ", boardName='" + boardName + '\'' + // boardName 필드를 toString에 추가
+                ", boardName='" + boardName + '\'' +
                 '}';
     }
 }

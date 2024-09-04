@@ -9,7 +9,7 @@ public class SessionManager {
     private static final String PREF_NAME = "LoginSession";
     private static final String IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_USER_ID = "userId";
-    private static final String KEY_USER_NAME = "userName"; // 사용자 이름 저장을 위한 키
+    private static final String KEY_USER_NAME = "userName";
 
     public SessionManager(Context context) {
         sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -19,7 +19,7 @@ public class SessionManager {
     public void createLoginSession(String userId, String userName) {
         editor.putBoolean(IS_LOGGED_IN, true);
         editor.putString(KEY_USER_ID, userId);
-        editor.putString(KEY_USER_NAME, userName); // 사용자 이름 저장
+        editor.putString(KEY_USER_NAME, userName);
         editor.commit();
     }
 

@@ -19,7 +19,7 @@ public class WebViewActivity extends AppCompatActivity {
         webView = findViewById(R.id.webview);
         webView.setWebViewClient(new WebViewClient());
 
-        String url = getIntent().getStringExtra("url"); // 인텐트에서 "url" 가져오기
+        String url = getIntent().getStringExtra("url");
         if (url != null) {
             Log.d("WebViewActivity", "Loading URL: " + url);
             webView.loadUrl(url);

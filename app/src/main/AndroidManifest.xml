@@ -119,7 +119,6 @@
             android:name=".SearchActivity"
             android:exported="true" />
 
-        <!-- Spotify LoginActivity 설정 -->
         <activity
             android:name="com.spotify.sdk.android.auth.LoginActivity"
             android:exported="true"

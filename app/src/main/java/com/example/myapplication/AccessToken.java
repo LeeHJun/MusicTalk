@@ -6,7 +6,6 @@ public class AccessToken {
     private int expiresIn;
     private String refreshToken;
 
-    // Default constructor required for calls to DataSnapshot.getValue(AccessToken.class)
     public AccessToken() {
     }
 

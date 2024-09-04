@@ -9,7 +9,6 @@ public class Chat {
     public String text;
 
     public Chat() {
-        // Default constructor required for calls to DataSnapshot.getValue(Comment.class)
     }
 
     public Chat(String text) {

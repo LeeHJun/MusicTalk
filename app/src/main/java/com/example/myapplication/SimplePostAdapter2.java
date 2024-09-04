@@ -31,9 +31,9 @@ public class SimplePostAdapter2 extends RecyclerView.Adapter<SimplePostAdapter2.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SingerItem2 post = boardPostList.get(position);
-        holder.boardTextView.setText(post.getBoardName());  // 게시판 이름 설정
-        holder.titleTextView.setText(post.getName());  // 제목 설정
-        holder.contentTextView.setText(post.getMobile());  // 내용 설정
+        holder.boardTextView.setText(post.getBoardName());
+        holder.titleTextView.setText(post.getName());
+        holder.contentTextView.setText(post.getMobile());
     }
 
     @Override

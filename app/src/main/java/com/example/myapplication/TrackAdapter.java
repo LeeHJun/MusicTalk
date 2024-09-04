@@ -38,7 +38,6 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
         holder.trackName.setText(track.getName());
         holder.artistName.setText(track.getArtist());
 
-        // 고정된 이미지 리소스를 사용하여 앨범 이미지를 설정합니다.
         holder.albumImage.setImageResource(R.drawable.albume);
 
         holder.itemView.setOnClickListener(v -> {

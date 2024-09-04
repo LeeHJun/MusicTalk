@@ -7,7 +7,6 @@ public class Post {
     private int likeCount; // 추가된 필드
 
     public Post() {
-        // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
     public Post(String content, String trackId, int commentCount, int likeCount) {
